@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
-    <HelloWorld msg="Welcome to Smart Emojis Picker"/>
-    
+    <HelloWorld msg="Pick Your Emojis Smartly!"/>
+
   </div>
 </template>
 
