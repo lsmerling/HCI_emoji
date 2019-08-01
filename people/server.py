@@ -68,6 +68,45 @@ def myObjective (layout, columns, o_inputs):
 
 
 
+# Returns a neighbor of a given layout (list);
+# Has a parameter 'n' to control distance in the neighborhood (optional)
+def neighbor(layout, n=1):
+    # This is wrong
+    # just swap two values to make it fully random
+    #you explore different minimum and it gets more strict over time, when you
+    #enter an object randomly you are making educated guesses that are getting more educated
+    for m in range(0, n):
+        i = random.randrange(0,len(layout))
+        j = random.randrange(0,len(layout))
+        layout[i], layout[j] = layout[j], layout[i]
+
+    return layout
+
+# Solver: Simulated annealing using exponential cooling schedule
+def anneal(k_max, *args):
+    s = args[0] # solution seed
+    columns = args[1]
+    obj_f = args[2]
+    o_inputs = args[3:]
+    s_ov = obj_f(s, columns, o_inputs)
+    T_min, T_initial, alpha = 0.0000001, 10000, 0.991 # Hyperparameters
+    converged = False
+    
+    for k in range (0, k_max):
+        T = max(T_min, T_initial * math.pow(alpha,k)) # exponential cooling schedule
+        s_new = neighbor(s[:], args[-1])
+        s_new_ov = obj_f(s_new, columns, o_inputs)
+        
+        delta = s_new_ov - s_ov
+        if delta < 0: # accept the neighbor if it is better
+            s = s_new[:]
+            s_ov = s_new_ov
+        elif random.random() < math.exp(-delta/T): # if not, decide according to the Metropolis rule
+            s = s_new[:]
+            s_ov = s_new_ov
+    return s, s_ov
+
+
 
 @app.route('/')
 def hello_world():
@@ -101,12 +140,13 @@ def add_name():
 
     #send back the WHOLE array of data, so the client can redisplay it
     return jsonify(data = data)
- 
 
 
 @app.route('/emoji')
 def emoji():
-    winner, winner_score = optimize(3000, random_search, seed_layout, columns, ST_and_myO, e_weights, associations)
+    #winner, winner_score = optimize(3000, random_search, seed_layout, columns, ST_and_myO, e_weights, associations)
+    winner, winner_score = optimize(10000, anneal, seed_layout, columns, ST_and_myO, e_weights, associations, 1)
+
     print(winner)
     return jsonify(winner = winner)
 
