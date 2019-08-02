@@ -1,4 +1,4 @@
-from flask import Flask
+﻿from flask import Flask
 from flask import render_template
 from flask import Response, request, jsonify
 import math, random
@@ -16,9 +16,48 @@ data = [
     },
 ]
 
-seed_layout = ['Tasks','Word','Excel','PPT','Admin','Mail','Cal','Ppl','News','Drive','Sites','Notes']
-e_weights = {'Tasks':0.1,'Word':0.2,'Excel':0.15,'PPT':0.2,'Admin':0.05,'Mail':0.5,'Cal':0.4,'Ppl':0.4,'News':0.4,'Drive':0.2,'Sites':0.01, 'Notes':0.05}
-associations = {'WordExcel':0.5,'WordPPT':0.5,'MailCal':0.3,'PplCal':0.3,'TasksCal':0.2,'NotesTasks': 0.3}
+EmojiData = [
+	{
+		"id": "thumbsup",
+		"image": "👍"
+	},
+	{
+		"id": "grinning",
+		"image": "😀"
+	},
+	{
+		"id": "hearteyes",
+		"image": "😍"
+	},
+	{
+		"id": "kissingheart",
+		"image": "😘"
+	},
+	{
+		"id": "laughing",
+		"image": "😆"
+	},
+	{
+		"id": "winking",
+		"image": "😜"
+	},
+	{
+		"id": "sweatsmile",
+		"image": "😅"
+	},
+	{
+		"id": "sweatjoy",
+		"image": "😂"
+	},
+	{
+		"id": "scream",
+		"image": "😱"
+	},
+]
+
+seed_layout = ['thumbsup','grinning','hearteyes','kissingheart','laughing','winking','sweatsmile','sweatjoy','scream']
+e_weights = {'thumbsup':0.2,'grinning':0.19,'hearteyes':0.18,'kissingheart':0.17,'laughing':0.16,'winking':0.15,'sweatsmile':0.14,'sweatjoy':0.13,'scream':0.12}
+associations = {'thumbsupkissingheart':0.2,'sweatsmilesweatjoy':0.3,'laughingsweatsmile':0.2}
 winner = {}
 winner_score = {}
 columns = 6
@@ -32,24 +71,6 @@ def linear_ST (layout, columns, o_inputs):
     for i,element in enumerate(layout):
         ST += o_inputs[0][layout[i]] * distance(columns,0,i) * reading_cost
     return ST
-
-def random_search(max_iters, *args):
-    columns = args[1] # Number of columns in this layout (=1) 
-    obj_f = args[2]   # Handle to the objective function (=linear_ST)
-    o_inputs = args[3:] # Arguments simply passed on to the objective function
-    incumbent = args[0] # Best-known design thus far
-    incumbent_ov = obj_f(incumbent, columns, o_inputs) # Set initial objective value
-
-    for iter in range (0, max_iters):
-        # TASK: FIX THE NEXT LINE
-        # candidate = incumbent # this is wrong
-        candidate = random.sample(incumbent, len(incumbent))
-        candidate_ov = obj_f(candidate, columns, o_inputs) # Then compute its objective value
-
-        if candidate_ov < incumbent_ov: # Update best known if an improvement was found
-            incumbent = candidate[:]
-            incumbent_ov = candidate_ov
-    return incumbent, incumbent_ov
 
 def optimize (iters, solver, *args):
     return solver(iters, *args)
@@ -66,15 +87,9 @@ def myObjective (layout, columns, o_inputs):
             ov += distance(columns, i, j) * association
     return ov
 
-
-
 # Returns a neighbor of a given layout (list);
 # Has a parameter 'n' to control distance in the neighborhood (optional)
 def neighbor(layout, n=1):
-    # This is wrong
-    # just swap two values to make it fully random
-    #you explore different minimum and it gets more strict over time, when you
-    #enter an object randomly you are making educated guesses that are getting more educated
     for m in range(0, n):
         i = random.randrange(0,len(layout))
         j = random.randrange(0,len(layout))
@@ -107,19 +122,10 @@ def anneal(k_max, *args):
     return s, s_ov
 
 
-
 @app.route('/')
 def hello_world():
-   return 'Hello World'
+   return seed_layout
 
-@app.route('/hello/<name>')
-def hello(name=None):
-    return render_template('hello.html', name=name) 
-
-@app.route('/people')
-def people(name=None):
-    return render_template('people.html', data=data)  
-  
 @app.route('/add_name', methods=['GET', 'POST'])
 def add_name():
     global data 
@@ -141,17 +147,26 @@ def add_name():
     #send back the WHOLE array of data, so the client can redisplay it
     return jsonify(data = data)
 
+@app.route('/gettext', methods=['GET', 'POST'])
+def gettext():
+	global EmojiData
 
-@app.route('/emoji')
-def emoji():
-    #winner, winner_score = optimize(3000, random_search, seed_layout, columns, ST_and_myO, e_weights, associations)
-    winner, winner_score = optimize(10000, anneal, seed_layout, columns, ST_and_myO, e_weights, associations, 1)
+	json_data = request.get_json()
+	rawdata = json_data["rawdata"].split(',')
 
+	for i in range(0,len(rawdata)):
+		e_weights[rawdata[i]] += 1
+		
+		if i < rawdata - 1:
+			try:
+				associations[rawdata[i]+rawdata[i+1]] += 1
+			except:
+				associations[rawdata[i]+rawdata[i+1]] = 1
+
+	winner, winner_score = optimize(10000, anneal, seed_layout, columns, ST_and_myO, e_weights, associations, 1)
     print(winner)
-    return jsonify(winner = winner)
 
-
+	return jsonify(winner = winner)
 
 if __name__ == '__main__':
    app.run(debug = True)
-
