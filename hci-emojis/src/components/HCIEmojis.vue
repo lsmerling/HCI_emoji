@@ -32,11 +32,8 @@
       
       </el-col>
   <el-col :span="8"><div class="grid-content bg-purple">
-    <picker @select="addEmojiUser1" title="Group1-User1" />
-<nimble-picker set="messenger" :data="data" @select="addEmojiUser1" />
+    <picker @select="addEmojiUser1" title="Group1-User1" :include="includedata" :recent="recentdata" :custom="customEmojis" />
 
-<!-- <picker title="Pick your emoji…" emoji="point_up" /> -->
-    
     </div></el-col>
 </el-row>
 
@@ -62,8 +59,8 @@
 
 <script>
 
-import data from 'emoji-mart-vue/data/messenger.json'
-import { NimblePicker } from 'emoji-mart-vue'
+// import data from 'emoji-mart-vue/data/messenger.json'
+// import { NimblePicker } from 'emoji-mart-vue'
 
 
 
@@ -72,7 +69,7 @@ export default {
   name: 'HelloWorld',
   components:{
       Picker,
-      NimblePicker,
+      // NimblePicker,
       // data
   },
   props: {
@@ -80,18 +77,78 @@ export default {
   },
   data: function() {
         return {
-            data,
+          includedata:{search: 'Search Results',
+  recent: 'Smarter area',
+  people: 'Smileys & People',
+  nature: 'Animals & Nature',
+  foods: 'Food & Drink',
+  activity: 'Activity',
+  places: 'Travel & Places',
+  objects: 'Objects',
+  symbols: 'Symbols',
+  flags: 'Flags',
+  custom: 'Custom',},
+          recentdata:["santa","thumbsup","grinning","hearteyes","kissingheart","laughing","winking","sweatsmile","sweatjoy","scream"],
+          customEmojis:  [ 
+            // {
+            //   id: 'santa',
+            //   name: 'Father Christmas',
+            //   colons: ':santa::skin-tone-3:',
+            //   text: '',
+            //   emoticons: [],
+            //   skin: 3,
+            //   native: '🎅🏼'
+            // },
+            // {
+            //   id: 'smiley',
+            //   name: 'Smiling Face with Open Mouth',
+            //   colons: ':smiley:',
+            //   text: ':)',
+            //   emoticons: [
+            //     '=)',
+            //     '=-)'
+            //   ],
+            //   skin: null,
+            //   native: '😃'
+            // }
+            {
+    name: 'Octocat',
+    short_names: ['octocat'],
+    text: '',
+    emoticons: [],
+    keywords: ['github'],
+    imageUrl: 'https://www.baidu.com/img/bd_logo1.png'
+    // imageUrl: 'https://assets-cdn.github.com/images/icons/emoji/octocat.png?v7'
+
+  },
+  {
+    name: 'Octocat',
+    short_names: ['octocat'],
+    text: '',
+    emoticons: '😃',
+    keywords: ['github'],
+    imageUrl: 'https://banner2.kisspng.com/20180328/ffw/kisspng-emoji-smiley-happiness-iphone-emoticon-emoji-5abb33c395c6d8.7618577315222179236135.jpg'
+
+},
+
+],
+            
             text1:'hello', 
             visible: false,
             user1_e_m: false,
             message1:'',
             user1textarea:'',
+
             // data:"{  id: 'santa',  name: 'Father Christmas',  colons: ':santa::skin-tone-3:',  text: '',  emoticons: [],  skin: 3,  native: '🎅🏼'}"
         }
   },
   methods: {
       addEmojiUser1(e){
           this.user1textarea = this.user1textarea + e.native;
+          // this.user1textarea = this.user1textarea + e.emoticons;
+
+          // this.user1textarea = this.user1textarea + "<img src=\"" +e.imageUrl + "\"/>";
+
       },
       submitTextUser1(){
           if(this.user1textarea == "" || this.user1textarea == null){
