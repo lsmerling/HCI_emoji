@@ -26,11 +26,11 @@ EmojiData = [
 		"image": "😀"
 	},
 	{
-		"id": "hearteyes",
+		"id": "heart_eyes",
 		"image": "😍"
 	},
 	{
-		"id": "kissingheart",
+		"id": "kissing_heart",
 		"image": "😘"
 	},
 	{
@@ -38,15 +38,15 @@ EmojiData = [
 		"image": "😆"
 	},
 	{
-		"id": "winking",
+		"id": "stuck_out_tongue_winking_eye",
 		"image": "😜"
 	},
 	{
-		"id": "sweatsmile",
+		"id": "sweat_smile",
 		"image": "😅"
 	},
 	{
-		"id": "sweatjoy",
+		"id": "joy",
 		"image": "😂"
 	},
 	{
@@ -55,9 +55,9 @@ EmojiData = [
 	},
 ]
 
-seed_layout = ['thumbsup','grinning','hearteyes','kissingheart','laughing','winking','sweatsmile','sweatjoy','scream']
-e_weights = {'thumbsup':0.2,'grinning':0.19,'hearteyes':0.18,'kissingheart':0.17,'laughing':0.16,'winking':0.15,'sweatsmile':0.14,'sweatjoy':0.13,'scream':0.12}
-associations = {'thumbsupkissingheart':0.2,'sweatsmilesweatjoy':0.3,'laughingsweatsmile':0.2}
+seed_layout = ['thumbsup','grinning','heart_eyes','kissing_heart','laughing','stuck_out_tongue_winking_eye','sweat_smile','joy','scream']
+e_weights = {'thumbsup':0.2,'grinning':0.19,'heart_eyes':0.18,'kissing_heart':0.17,'laughing':0.16,'stuck_out_tongue_winking_eye':0.15,'sweat_smile':0.14,'joy':0.13,'scream':0.12}
+associations = {'thumbsupkissing_heart':0.2,'sweat_smilejoy':0.3,'laughingsweat_smile':0.2}
 winner = {}
 winner_score = {}
 columns = 6
