@@ -33,6 +33,8 @@
       </el-col>
   <el-col :span="8"><div class="grid-content bg-purple">
     <picker @select="addEmojiUser1" title="Group1-User1" />
+<nimble-picker set="messenger" :data="data" @select="addEmojiUser1" />
+
 <!-- <picker title="Pick your emoji…" emoji="point_up" /> -->
     
     </div></el-col>
@@ -40,8 +42,13 @@
 
 <el-row :gutter="20">
   <el-col :span="16"><div class="grid-content bg-purple"></div></el-col>
-  <el-col :span="8"><div class="grid-content bg-purple"><picker @select="addEmoji" title="Gropu1-User2" /></div></el-col>
+  <el-col :span="8"><div class="grid-content bg-purple">
+    <!-- <picker @select="addEmoji" title="Gropu1-User2" /> -->
+    
+    </div></el-col>
 </el-row>
+
+
 
 
 
@@ -55,23 +62,31 @@
 
 <script>
 
+import data from 'emoji-mart-vue/data/messenger.json'
+import { NimblePicker } from 'emoji-mart-vue'
+
+
 
 import { Picker } from 'emoji-mart-vue'
 export default {
   name: 'HelloWorld',
   components:{
-      Picker
+      Picker,
+      NimblePicker,
+      // data
   },
   props: {
     msg: String
   },
   data: function() {
         return {
+            data,
             text1:'hello', 
             visible: false,
             user1_e_m: false,
             message1:'',
-            user1textarea:''
+            user1textarea:'',
+            // data:"{  id: 'santa',  name: 'Father Christmas',  colons: ':santa::skin-tone-3:',  text: '',  emoticons: [],  skin: 3,  native: '🎅🏼'}"
         }
   },
   methods: {
