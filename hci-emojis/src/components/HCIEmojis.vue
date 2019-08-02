@@ -2,51 +2,45 @@
     <div>
         <h1>{{ msg }}</h1>
 
-        <!-- <el-button @click="visible = true">Button</el-button> -->
-    <el-dialog :visible.sync="visible" title="Hello world">
-      <p>SENT!</p>
-    </el-dialog>
-    <!-- <textarea  v-model="text1"></textarea> -->
-<!-- <picker set="emojione" /> -->
-
-<!-- <picker title="Pick your emoji…" emoji="point_up" /> -->
-<!-- <picker :style="{ position: 'absolute', bottom: '20px', right: '20px' }" /> -->
-<!-- <picker :i18n="{ search: 'Recherche', categories: { search: 'Résultats de recherche', recent: 'Récents' } }" /> -->
-
 
 <el-row :gutter="20">
   <el-col :span="16">
       
       <div>
           <div id="showing-box1">
-                {{message1}}
+               
+                <span v-html="message1"></span>
           </div>
           <div id="input-box1">
-            <el-col :span="20"> 
+
+            <el-col :span="24"> 
                 <el-input
                 type="input"
                 :rows="2"
-                placeholder="请输入内容"
+                placeholder="Input Here..."
                 resize = "none"
                 v-model="user1textarea">
+                <template slot="prepend">User1:</template>
                 <template slot="append"><el-button type="success" @click="submitTextUser1">Go</el-button></template>
                 </el-input>
             </el-col>
-            <el-col :span="4">
-                
-            </el-col>
+
 
 </div></div>
 
           
       
       </el-col>
-  <el-col :span="8"><div class="grid-content bg-purple"><picker @select="addEmojiUser1" /></div></el-col>
+  <el-col :span="8"><div class="grid-content bg-purple">
+    <picker @select="addEmojiUser1" title="Group1-User1" />
+<!-- <picker title="Pick your emoji…" emoji="point_up" /> -->
+    
+    </div></el-col>
 </el-row>
 
 <el-row :gutter="20">
   <el-col :span="16"><div class="grid-content bg-purple"></div></el-col>
-  <el-col :span="8"><div class="grid-content bg-purple"><picker @select="addEmoji" /></div></el-col>
+  <el-col :span="8"><div class="grid-content bg-purple"><picker @select="addEmoji" title="Gropu1-User2" /></div></el-col>
 </el-row>
 
 
@@ -60,6 +54,8 @@
 </template>
 
 <script>
+
+
 import { Picker } from 'emoji-mart-vue'
 export default {
   name: 'HelloWorld',
@@ -73,6 +69,7 @@ export default {
         return {
             text1:'hello', 
             visible: false,
+            user1_e_m: false,
             message1:'',
             user1textarea:''
         }
@@ -82,7 +79,25 @@ export default {
           this.user1textarea = this.user1textarea + e.native;
       },
       submitTextUser1(){
-          this.message1 = this.message1 + this.user1textarea;
+          if(this.user1textarea == "" || this.user1textarea == null){
+            return;
+          }
+          this.message1 = this.handelsentmessage("User1", this.message1, this.user1textarea);
+          this.user1textarea = "";
+      },
+      handelsentmessage(username, preValue, addValue){
+        var myDate = new Date();
+        var time_date = myDate.toLocaleString( );        //获取日期与时间
+        var rawHTML = "";
+        rawHTML = preValue;
+        rawHTML += "<div class=sender_><span class=username_time_date>"
+        rawHTML += username + "    " + time_date + ":</span><br/>";
+        // rawHTML += "<div class=\'sender_\'><span class=\'username_time_date\'>"
+        // rawHTML += username + "    " + time_date + ":</span><br/>";
+        rawHTML += addValue;
+        rawHTML += "</div>";
+        return rawHTML;
+
       }
   }
 }
@@ -129,5 +144,14 @@ a {
   .row-bg {
     padding: 10px 0;
     /* background-color: #f9fafc; */
+  }
+  .sender_ {
+    text-align: right;
+  }
+  .reciver_ {
+    text-align: left;
+  }
+  .username_time_date {
+    color: #67C23A; 
   }
 </style>
