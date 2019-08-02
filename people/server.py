@@ -149,24 +149,24 @@ def add_name():
 
 @app.route('/gettext', methods=['GET', 'POST'])
 def gettext():
-	global EmojiData
 
-	json_data = request.get_json()
-	rawdata = json_data["rawdata"].split(',')
+    request_text = request.args.get('rt')
+    global EmojiData
 
-	for i in range(0,len(rawdata)):
-		e_weights[rawdata[i]] += 1
-		
-		if i < rawdata - 1:
-			try:
-				associations[rawdata[i]+rawdata[i+1]] += 1
-			except:
-				associations[rawdata[i]+rawdata[i+1]] = 1
+    rawdata = request_text.split(',')
 
-	winner, winner_score = optimize(10000, anneal, seed_layout, columns, ST_and_myO, e_weights, associations, 1)
+    for i in range(0,len(rawdata)):
+        e_weights[rawdata[i]] += 1
+        if i < len(rawdata) - 1:
+            try:
+                associations[rawdata[i]+rawdata[i+1]] += 1
+            except:
+                associations[rawdata[i]+rawdata[i+1]] = 1
+
+    winner, winner_score = optimize(10000, anneal, seed_layout, columns, ST_and_myO, e_weights, associations, 1)
     print(winner)
 
-	return jsonify(winner = winner)
+    return jsonify(winner = winner)
 
 if __name__ == '__main__':
    app.run(debug = True)
